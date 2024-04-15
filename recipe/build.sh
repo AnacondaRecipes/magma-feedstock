@@ -10,6 +10,8 @@ cd build
 cmake .. -DUSE_FORTRAN=OFF -DGPU_TARGET="Fermi Kepler Maxwell Pascal Volta Turing Ampere" -DMAGMA_ENABLE_CUDA=ON -DCMAKE_INSTALL_PREFIX=$PREFIX
 make -j${CPU_COUNT} ${VERBOSE_AT}
 make -j${CPU_COUNT} testing
+${PYTHON} ../testing/run_tests.py
 make -j${CPU_COUNT} sparse-testing
+${PYTHON} ../sparse/testing/run_tests.py
 make install
 cd ..
