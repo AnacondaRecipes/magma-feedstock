@@ -3,13 +3,8 @@ cxx_compiler:           # [win]
 c_compiler:             # [win]
   - vs2019              # [win]
 gpu_variant:
-  - cuda-11                    # [linux and x86_64]
+  #- cuda-11                    # [linux and x86_64]
   - cuda-12                    # [linux and x86_64]
 # Only needed for cuda-11
 cudatoolkit:
   - 11.8
-# Only needed for cuda-12
-cuda_compiler_version:         # [linux and x86_64]
-  - 12.3                       # [linux and x86_64]
-cuda_compiler:                 # [linux and x86_64]
-  - cuda-nvcc                  # [linux and x86_64]
