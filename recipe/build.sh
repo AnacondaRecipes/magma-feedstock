@@ -16,7 +16,7 @@ cp sparse/testing/* ../sparse/testing/
 cd ../testing
 # These are manual builds for now. The test summary is written to conda-build output and the details are written to
 # log files in the user's home directory.
-python run_tests.py > ~/testing_output.txt
+python2 run_tests.py > ~/testing_output.txt
 cd ../sparse/testing
 python2 run_tests.py > ~/sparse_testing_output.txt
 cd ../../build
