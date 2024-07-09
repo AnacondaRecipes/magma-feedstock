@@ -2,6 +2,9 @@
 # TODO: examine if it is possible to link DSO dynamically
 package:
   name: magma
+  # This version builds and tests, but it hasn't been released, because it wasn't needed in the end. It was going to be
+  # used for PyTorch 2.3.0, but after doing the work we discovered that PyTorch 2.3.0 doesn't support CUDA 12.4 yet.
+  # Magma might need to be updated to the next version to support PyTorch 2.4+ anyway, so we aren't releasing this.
   version: 2.7.1
 
 source:
