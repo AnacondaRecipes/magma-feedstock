@@ -2,6 +2,9 @@
 # TODO: examine if it is possible to link DSO dynamically
 package:
   name: magma
+  # This version builds and tests, but it hasn't been released, because it wasn't needed in the end. It was going to be
+  # used for PyTorch 2.3.0, but after doing the work we discovered that PyTorch 2.3.0 doesn't support CUDA 12.4 yet.
+  # Magma might need to be updated to the next version to support PyTorch 2.4+ anyway, so we aren't releasing this.
   version: 2.7.1
 
 source:
@@ -20,17 +23,22 @@ requirements:
   build:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
+    - {{ compiler('cuda') }}                                 # [gpu_variant == "cuda-12"]
     - cmake
     - ninja       # [win]
     - m2-patch    # [win]
     - patch       # [not win]
   host:
-    - cudatoolkit {{ cudatoolkit }}*
+    - cudatoolkit {{ cudatoolkit }}*                         # [gpu_variant == "cuda-11"]
+    - cuda-cudart-dev                                        # [gpu_variant == "cuda-12"]
+    - cuda-profiler-api                                      # [gpu_variant == "cuda-12"]
+    - libcublas-dev                                          # [gpu_variant == "cuda-12"]
+    - libcusparse-dev                                        # [gpu_variant == "cuda-12"]
     - intel-openmp {{ mkl }}
     - mkl {{ mkl }}
     - mkl-include
   run:
-    - {{ pin_compatible('cudatoolkit', max_pin='x.x') }}
+    - {{ pin_compatible('cudatoolkit', max_pin='x.x') }}     # [gpu_variant == "cuda-11"]
     - intel-openmp {{ mkl }}
     - mkl {{ mkl }}
 
