@@ -1,5 +1,4 @@
 {% set version = "2.7.1" %}
-{% set cuda_version = "12.4" %}
 
 # adapted from recipe in https://github.com/pytorch/builder
 # TODO: examine if it is possible to link DSO dynamically
@@ -31,7 +30,6 @@ requirements:
     - patch       # [not win]
   host:
     - cudatoolkit {{ cudatoolkit }}*                         # [gpu_variant == "cuda-11"]
-    - cuda-version {{ cuda_version }}                        # [gpu_variant == "cuda-12"]
     - cuda-cudart-dev                                        # [gpu_variant == "cuda-12"]
     - cuda-profiler-api                                      # [gpu_variant == "cuda-12"]
     - libcublas-dev                                          # [gpu_variant == "cuda-12"]
