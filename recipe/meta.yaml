@@ -65,7 +65,7 @@ about:
     A new generation of linear algebra libraries that achieves the fastest possible time to an accurate solution on
     heterogeneous architectures, starting with current multicore + multi-GPU systems.
   doc_url: https://icl.utk.edu/projectsfiles/magma/doxygen/
-  dev_url: https://bitbucket.org/icl/magma/
+  dev_url: https://github.com/icl-utk-edu/magma
 
 extra:
   skip-lints:
