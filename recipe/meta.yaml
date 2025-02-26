@@ -1,14 +1,13 @@
+{% set version = "2.7.1" %}
+
 # adapted from recipe in https://github.com/pytorch/builder
 # TODO: examine if it is possible to link DSO dynamically
 package:
   name: magma
-  # This version builds and tests, but it hasn't been released, because it wasn't needed in the end. It was going to be
-  # used for PyTorch 2.3.0, but after doing the work we discovered that PyTorch 2.3.0 doesn't support CUDA 12.4 yet.
-  # Magma might need to be updated to the next version to support PyTorch 2.4+ anyway, so we aren't releasing this.
-  version: 2.7.1
+  version: {{ version }}
 
 source:
-   url: http://icl.cs.utk.edu/projectsfiles/magma/downloads/magma-2.7.1.tar.gz
+   url: https://icl.cs.utk.edu/projectsfiles/magma/downloads/magma-{{ version }}.tar.gz
    sha256: d9c8711c047a38cae16efde74bee2eb3333217fd2711e1e9b8606cbbb4ae1a50
    patches:
     - thread_queue.patch
@@ -24,6 +23,7 @@ requirements:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
     - {{ compiler('cuda') }}                                 # [gpu_variant == "cuda-12"]
+    - make        # [not win]
     - cmake
     - ninja       # [win]
     - m2-patch    # [win]
@@ -54,10 +54,17 @@ test:
     - if not exist %LIBRARY_PREFIX%\bin\magma_sparse.dll exit 1   # [win]
 
 about:
-  home: https://icl.utk.edu/magma/index.html
-  license: BSD 3-Clause
+  home: https://icl.utk.edu/magma
+  license: BSD-3-Clause
   license_family: BSD
   license_file: COPYRIGHT
   summary: Matrix Algebra on GPU and Multicore Architectures
+  description: |
+    A new generation of linear algebra libraries that achieves the fastest possible time to an accurate solution on
+    heterogeneous architectures, starting with current multicore + multi-GPU systems.
   doc_url: https://icl.utk.edu/projectsfiles/magma/doxygen/
-  dev_url: https://bitbucket.org/icl/magma/
+  dev_url: https://github.com/icl-utk-edu/magma
+
+extra:
+  skip-lints:
+    - host_section_needs_exact_pinnings
