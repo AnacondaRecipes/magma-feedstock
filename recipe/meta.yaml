@@ -13,7 +13,7 @@ source:
     - thread_queue.patch
 
 build:
-  number: 0
+  number: 1
   # we currently only need this for pytorch GPU, which currently only uses this for linux-64.
   # Windows is theoretically possible but we haven't got the CMake CUDA support to work there yet.
   skip: True  # [not (linux and x86_64)]
