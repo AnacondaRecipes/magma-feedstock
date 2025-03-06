@@ -8,3 +8,5 @@ gpu_variant:
 # Only needed for cuda-11
 cudatoolkit:
   - 11.8
+mkl:
+  - 2025
