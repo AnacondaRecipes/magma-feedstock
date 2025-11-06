@@ -25,6 +25,10 @@ md build
 cd build
 if errorlevel 1 exit /b 1
 
+:: Set MKLROOT and CMAKE_PREFIX_PATH for MKL detection
+set "MKLROOT=%LIBRARY_PREFIX%"
+set "CMAKE_PREFIX_PATH=%LIBRARY_PREFIX%;%CMAKE_PREFIX_PATH%"
+
 :: Must add --use-local-env to NVCC_FLAGS otherwise NVCC autoconfigs the host
 :: compiler to cl.exe instead of the full path. MSVC does not accept a
 :: C++11 standard argument, and defaults to C++14
@@ -34,10 +38,12 @@ cmake %SRC_DIR% ^
   -G "Ninja" ^
   -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS:BOOL=ON ^
   -DCMAKE_BUILD_TYPE=Release ^
+  -DCMAKE_PREFIX_PATH=%LIBRARY_PREFIX% ^
   -DGPU_TARGET="%CUDA_ARCH_LIST%" ^
   -DMAGMA_ENABLE_CUDA:BOOL=ON ^
   -DUSE_FORTRAN:BOOL=OFF ^
   -DMAGMA_WITH_MKL:BOOL=ON ^
+  -DMKLROOT=%LIBRARY_PREFIX% ^
   -DCMAKE_CUDA_FLAGS="--use-local-env -Xfatbin -compress-all" ^
   -DCMAKE_CUDA_SEPARABLE_COMPILATION:BOOL=OFF
 if errorlevel 1 exit /b 1

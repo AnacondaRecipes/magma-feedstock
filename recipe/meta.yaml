@@ -11,6 +11,7 @@ source:
    sha256: d9c8711c047a38cae16efde74bee2eb3333217fd2711e1e9b8606cbbb4ae1a50
    patches:
     - thread_queue.patch
+    - cmake_policy.patch
 
 build:
   number: 1
