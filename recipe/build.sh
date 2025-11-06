@@ -7,9 +7,9 @@ export MKLROOT=$PREFIX/lib
 
 mkdir build
 cd build
-# Use explicit compute capabilities compatible with CUDA 12.x (min: compute_35)
-# 35,37: Kepler (K40+), 50,52,53: Maxwell, 60,61,62: Pascal, 70,72,75: Volta/Turing, 80,86,87: Ampere, 89,90: Ada/Hopper
-cmake .. -DUSE_FORTRAN=OFF -DGPU_TARGET="35 50 60 70 75 80 86 89" -DMAGMA_ENABLE_CUDA=ON -DCMAKE_INSTALL_PREFIX=$PREFIX
+# Use explicit compute capabilities compatible with CUDA 12.8 (min: sm_60 = Pascal)
+# sm_60: Pascal, sm_70/75: Volta/Turing, sm_80/86: Ampere, sm_89: Ada, sm_90: Hopper
+cmake .. -DUSE_FORTRAN=OFF -DGPU_TARGET="sm_60 sm_70 sm_75 sm_80 sm_86 sm_89 sm_90" -DMAGMA_ENABLE_CUDA=ON -DCMAKE_INSTALL_PREFIX=$PREFIX
 make -j${CPU_COUNT} ${VERBOSE_AT}
 make -j${CPU_COUNT} testing
 make -j${CPU_COUNT} sparse-testing
