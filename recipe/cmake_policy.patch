@@ -1,12 +1,11 @@
 --- CMakeLists.txt
 +++ CMakeLists.txt
-@@ -744,7 +744,7 @@
- # -----------------------------------------------------------------------------
- # Set CMake policies
- # -----------------------------------------------------------------------------
--cmake_policy(SET CMP0037 OLD)
-+cmake_policy(SET CMP0037 NEW)
+@@ -654,7 +654,7 @@
  
- # -----------------------------------------------------------------------------
- # Set default build type
-
+ 
+ set( CMAKE_RUNTIME_OUTPUT_DIRECTORY "${SPARSE_TEST_DIR}" )
+-cmake_policy( SET CMP0037 OLD)
++cmake_policy( SET CMP0037 NEW)
+ foreach( TEST ${sparse_testing_all} )
+     string( REGEX REPLACE "\\.(cpp|f90|F90)"     "" EXE ${TEST} )
+     string( REGEX REPLACE "${SPARSE_TEST_DIR}/" "" EXE ${EXE} )
