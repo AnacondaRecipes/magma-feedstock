@@ -37,6 +37,7 @@ requirements:
     - intel-openmp {{ mkl }}
     - mkl {{ mkl }}
     - mkl-include
+    - mkl-devel {{ mkl }}  # [win]
   run:
     - {{ pin_compatible('cudatoolkit', max_pin='x.x') }}     # [gpu_variant == "cuda-11"]
     - intel-openmp {{ mkl }}

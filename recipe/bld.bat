@@ -28,11 +28,13 @@ if errorlevel 1 exit /b 1
 :: Set MKLROOT and CMAKE_PREFIX_PATH for MKL detection
 set "MKLROOT=%LIBRARY_PREFIX%"
 set "CMAKE_PREFIX_PATH=%LIBRARY_PREFIX%;%CMAKE_PREFIX_PATH%"
+
+:: Set BLA_VENDOR environment variable so CMake can find MKL
 set "BLA_VENDOR=Intel10_64lp"
 
-:: Explicitly set MKL library paths for Windows linking
-set "MKL_LIB=%LIBRARY_PREFIX%\lib"
-set "LAPACK_LIBRARIES=%MKL_LIB%\mkl_intel_lp64.lib;%MKL_LIB%\mkl_intel_thread.lib;%MKL_LIB%\mkl_core.lib;%MKL_LIB%\libiomp5md.lib"
+:: Explicitly set MKL library using the single-dynamic runtime (mkl_rt.lib)
+:: This is what's provided by mkl-devel on Windows defaults channel
+set "LAPACK_LIBRARIES=%LIBRARY_PREFIX%\lib\mkl_rt.lib"
 
 :: Must add --use-local-env to NVCC_FLAGS otherwise NVCC autoconfigs the host
 :: compiler to cl.exe instead of the full path. MSVC does not accept a
