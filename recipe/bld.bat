@@ -28,6 +28,11 @@ if errorlevel 1 exit /b 1
 :: Set MKLROOT and CMAKE_PREFIX_PATH for MKL detection
 set "MKLROOT=%LIBRARY_PREFIX%"
 set "CMAKE_PREFIX_PATH=%LIBRARY_PREFIX%;%CMAKE_PREFIX_PATH%"
+set "BLA_VENDOR=Intel10_64lp"
+
+:: Explicitly set MKL library paths for Windows linking
+set "MKL_LIB=%LIBRARY_PREFIX%\lib"
+set "LAPACK_LIBRARIES=%MKL_LIB%\mkl_intel_lp64.lib;%MKL_LIB%\mkl_intel_thread.lib;%MKL_LIB%\mkl_core.lib;%MKL_LIB%\libiomp5md.lib"
 
 :: Must add --use-local-env to NVCC_FLAGS otherwise NVCC autoconfigs the host
 :: compiler to cl.exe instead of the full path. MSVC does not accept a
@@ -44,6 +49,8 @@ cmake %SRC_DIR% ^
   -DUSE_FORTRAN:BOOL=OFF ^
   -DMAGMA_WITH_MKL:BOOL=ON ^
   -DMKLROOT=%LIBRARY_PREFIX% ^
+  -DBLA_VENDOR=Intel10_64lp ^
+  -DLAPACK_LIBRARIES="%LAPACK_LIBRARIES%" ^
   -DCMAKE_CUDA_FLAGS="--use-local-env -Xfatbin -compress-all" ^
   -DCMAKE_CUDA_SEPARABLE_COMPILATION:BOOL=OFF
 if errorlevel 1 exit /b 1
