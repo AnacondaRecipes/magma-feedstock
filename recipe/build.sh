@@ -7,7 +7,7 @@ export MKLROOT=$PREFIX/lib
 
 mkdir build
 cd build
-cmake .. -DUSE_FORTRAN=OFF -DGPU_TARGET="Fermi Kepler Maxwell Pascal Volta Turing Ampere" -DMAGMA_ENABLE_CUDA=ON -DCMAKE_INSTALL_PREFIX=$PREFIX
+cmake .. -DUSE_FORTRAN=OFF -DGPU_TARGET="Kepler Maxwell Pascal Volta Turing Ampere Ada" -DMAGMA_ENABLE_CUDA=ON -DCMAKE_INSTALL_PREFIX=$PREFIX
 make -j${CPU_COUNT} ${VERBOSE_AT}
 make -j${CPU_COUNT} testing
 make -j${CPU_COUNT} sparse-testing
