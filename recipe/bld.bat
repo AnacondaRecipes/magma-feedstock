@@ -53,7 +53,7 @@ cmake %SRC_DIR% ^
   -DMKLROOT=%LIBRARY_PREFIX% ^
   -DBLA_VENDOR=Intel10_64lp ^
   -DLAPACK_LIBRARIES="%LAPACK_LIBRARIES%" ^
-  -DCMAKE_CUDA_FLAGS="--use-local-env -Xfatbin -compress-all" ^
+  -DCMAKE_CUDA_FLAGS="--use-local-env -Xfatbin -compress-all -Wno-deprecated-gpu-targets" ^
   -DCMAKE_CUDA_SEPARABLE_COMPILATION:BOOL=OFF
 if errorlevel 1 exit /b 1
 
@@ -64,18 +64,24 @@ cmake --build . ^
     --verbose
 if errorlevel 1 exit /b 1
 
-cp .\lib\magma.lib %LIBRARY_PREFIX%\lib\magma.lib
-cp .\magma.dll %LIBRARY_PREFIX%\bin\magma.dll
-cp .\lib\magma_sparse.lib %LIBRARY_PREFIX%\lib\magma_sparse.lib
-cp .\magma_sparse.dll %LIBRARY_PREFIX%\bin\magma_sparse.dll
+copy /Y .\lib\magma.lib %LIBRARY_PREFIX%\lib\magma.lib
+if errorlevel 1 exit /b 1
+copy /Y .\magma.dll %LIBRARY_PREFIX%\bin\magma.dll
+if errorlevel 1 exit /b 1
+copy /Y .\lib\magma_sparse.lib %LIBRARY_PREFIX%\lib\magma_sparse.lib
+if errorlevel 1 exit /b 1
+copy /Y .\magma_sparse.dll %LIBRARY_PREFIX%\bin\magma_sparse.dll
 if errorlevel 1 exit /b 1
 
 cd ..
 
-md %LIBRARY_PREFIX%\include
-xcopy /s /k /y .\include\*.h %LIBRARY_PREFIX%\include
-xcopy /s /k /y .\sparse\include\*.h %LIBRARY_PREFIX%\include
-cp .\build\include\magma_config.h %LIBRARY_PREFIX%\include\magma_config.h
-md  %LIBRARY_PREFIX%\lib\pkgconfig
-cp .\build\lib\pkgconfig\magma.pc %LIBRARY_PREFIX%\lib\pkgconfig\magma.pc
+if not exist %LIBRARY_PREFIX%\include md %LIBRARY_PREFIX%\include
+xcopy /s /k /y /i .\include\*.h %LIBRARY_PREFIX%\include
+if errorlevel 1 exit /b 1
+xcopy /s /k /y /i .\sparse\include\*.h %LIBRARY_PREFIX%\include
+if errorlevel 1 exit /b 1
+copy /Y .\build\include\magma_config.h %LIBRARY_PREFIX%\include\magma_config.h
+if errorlevel 1 exit /b 1
+if not exist %LIBRARY_PREFIX%\lib\pkgconfig md %LIBRARY_PREFIX%\lib\pkgconfig
+copy /Y .\build\lib\pkgconfig\magma.pc %LIBRARY_PREFIX%\lib\pkgconfig\magma.pc
 if errorlevel 1 exit /b 1

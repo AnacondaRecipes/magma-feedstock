@@ -1,34 +1,66 @@
 #!/bin/bash
 
-export CMAKE_LIBRARY_PATH=$PREFIX/lib:$PREFIX/include:$CMAKE_LIBRARY_PATH
-export CMAKE_PREFIX_PATH=$PREFIX
-export PATH=$PREFIX/bin:/usr/local/cuda-${cudatoolkit}/bin:$PATH
-export MKLROOT=$PREFIX/lib
+set -ex
+
+# Duplicate lists because of https://bitbucket.org/icl/magma/pull-requests/32
+# Use compatible arches for CUDA 12.8 (minimum sm_60)
+export CUDA_ARCH_LIST="sm_60,sm_70,sm_80"
+export CUDAARCHS="60-real;70-real;80-real"
+
+if [[ "$cuda_compiler_version" == "11.8" ]]; then
+  export CUDA_ARCH_LIST="${CUDA_ARCH_LIST},sm_86,sm_90"
+  export CUDAARCHS="${CUDAARCHS};86-real;90"
+elif [[ "$cuda_compiler_version" == "12."* ]]; then
+  export CUDA_ARCH_LIST="${CUDA_ARCH_LIST},sm_86,sm_90"
+  export CUDAARCHS="${CUDAARCHS};86-real;90"
+else
+  echo "Unsupported CUDA version. Please update build.sh"
+  exit 1
+fi
+
+# Conda-forge nvcc compiler flags environment variable doesn't match CMake environment variable
+# Redirect it so that the flags are added to nvcc calls
+export CUDAFLAGS="${CUDAFLAGS} ${CUDA_CFLAGS}"
+
+# Compress SASS and PTX in the binary to reduce disk usage
+export CUDAFLAGS="${CUDAFLAGS} -Xfatbin -compress-all"
+
+# Suppress deprecation warnings
+export CUDAFLAGS="${CUDAFLAGS} -Wno-deprecated-gpu-targets"
+export CXXFLAGS="${CXXFLAGS} -Wno-deprecated-declarations"
 
 mkdir build
 cd build
-# Use explicit compute capabilities compatible with CUDA 12.8 (min: sm_60 = Pascal)
-# sm_60: Pascal, sm_70/75: Volta/Turing, sm_80/86: Ampere, sm_89: Ada, sm_90: Hopper
-# Note: sm_60/sm_70 will be deprecated in future CUDA releases, but are still supported in 12.8
-# Suppress deprecation warnings to clean up build logs
-export CUDAFLAGS="-Wno-deprecated-gpu-targets"
-export CXXFLAGS="${CXXFLAGS} -Wno-deprecated-declarations"
-# Use medium code model to handle large binaries from multiple GPU architectures
-# This prevents relocation overflow errors during linking
-export CFLAGS="${CFLAGS} -mcmodel=medium"
-export CXXFLAGS="${CXXFLAGS} -mcmodel=medium"
-cmake .. -DUSE_FORTRAN=OFF -DGPU_TARGET="sm_60 sm_70 sm_75 sm_80 sm_86 sm_89 sm_90" -DMAGMA_ENABLE_CUDA=ON -DCMAKE_INSTALL_PREFIX=$PREFIX
-make -j${CPU_COUNT} ${VERBOSE_AT}
-make -j${CPU_COUNT} testing
-make -j${CPU_COUNT} sparse-testing
-cp testing/* ../testing/
-cp sparse/testing/* ../sparse/testing/
-cd ../testing
-# These are manual builds for now. The test summary is written to conda-build output and the details are written to
-# log files in the user's home directory.
-python2 run_tests.py > ~/testing_output.txt
-cd ../sparse/testing
-python2 run_tests.py > ~/sparse_testing_output.txt
-cd ../../build
-make install
+
+cmake $SRC_DIR \
+  -G "Ninja" \
+  -DBUILD_SHARED_LIBS:BOOL=ON \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DGPU_TARGET=$CUDA_ARCH_LIST \
+  -DMAGMA_ENABLE_CUDA:BOOL=ON \
+  -DUSE_FORTRAN:BOOL=OFF \
+  -DCMAKE_CUDA_SEPARABLE_COMPILATION:BOOL=OFF \
+  ${CMAKE_ARGS}
+
+# Build both magma and magma_sparse (unlike conda-forge which only builds magma_sparse)
+cmake --build . \
+    --config Release \
+    --parallel ${CPU_COUNT} \
+    --target magma magma_sparse \
+    --verbose
+
+# Strip binaries to reduce size
+$STRIP ./lib/libmagma.so
+$STRIP ./lib/libmagma_sparse.so
+
+# Install libraries
+install ./lib/libmagma.so $PREFIX/lib/libmagma.so
+install ./lib/libmagma_sparse.so $PREFIX/lib/libmagma_sparse.so
+
+# Install headers
 cd ..
+mkdir -p $PREFIX/include
+cp -pr ./include/*.h $PREFIX/include
+cp -pr ./sparse/include/*.h $PREFIX/include
+install -D ./build/include/magma_config.h $PREFIX/include/magma_config.h
+install -D ./build/lib/pkgconfig/magma.pc $PREFIX/lib/pkgconfig/magma.pc
