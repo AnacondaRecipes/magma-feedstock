@@ -13,6 +13,10 @@ cd build
 # Suppress deprecation warnings to clean up build logs
 export CUDAFLAGS="-Wno-deprecated-gpu-targets"
 export CXXFLAGS="${CXXFLAGS} -Wno-deprecated-declarations"
+# Use medium code model to handle large binaries from multiple GPU architectures
+# This prevents relocation overflow errors during linking
+export CFLAGS="${CFLAGS} -mcmodel=medium"
+export CXXFLAGS="${CXXFLAGS} -mcmodel=medium"
 cmake .. -DUSE_FORTRAN=OFF -DGPU_TARGET="sm_60 sm_70 sm_75 sm_80 sm_86 sm_89 sm_90" -DMAGMA_ENABLE_CUDA=ON -DCMAKE_INSTALL_PREFIX=$PREFIX
 make -j${CPU_COUNT} ${VERBOSE_AT}
 make -j${CPU_COUNT} testing
