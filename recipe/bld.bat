@@ -5,7 +5,7 @@
 :: if errorlevel 1 exit /b 1
 
 :: Duplicate lists because of https://bitbucket.org/icl/magma/pull-requests/32
-set "CUDA_ARCH_LIST=sm_50,sm_60,sm_70,sm_80"
+set "CUDA_ARCH_LIST=sm_60,sm_70,sm_80"
 set "CUDAARCHS=50-virtual;60-virtual;70-virtual;80-virtual"
 
 if "%cuda_compiler_version%"=="11.8" (

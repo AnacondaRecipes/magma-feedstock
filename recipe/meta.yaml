@@ -15,8 +15,6 @@ source:
 
 build:
   number: 0
-  # we currently only need this for pytorch GPU, which currently only uses this for linux-64.
-  # Windows CUDA support is being enabled - the build script includes CUDA configuration.
   skip: true  # [not ((win or linux) and x86_64)]
 requirements:
   build:
