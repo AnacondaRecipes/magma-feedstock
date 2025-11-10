@@ -24,7 +24,6 @@ requirements:
     - {{ compiler('cuda') }}                                 # [gpu_variant == "cuda-12"]
     - cmake
     - ninja
-    - msys2-patch    # [win]
   host:
     - cudatoolkit {{ cudatoolkit }}*                         # [gpu_variant == "cuda-11"]
     - cuda-cudart-dev                                        # [gpu_variant == "cuda-12"]
@@ -66,4 +65,3 @@ about:
 extra:
   skip-lints:
     - host_section_needs_exact_pinnings
-    - patch_unnecessary

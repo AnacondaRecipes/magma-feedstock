@@ -4,15 +4,16 @@ set -ex
 
 # Duplicate lists because of https://bitbucket.org/icl/magma/pull-requests/32
 # Use compatible arches for CUDA 12.8 (minimum sm_60)
+# Aligned with Windows build: sm_60,sm_70,sm_80,sm_90 for CUDA 12
 export CUDA_ARCH_LIST="sm_60,sm_70,sm_80"
-export CUDAARCHS="60-real;70-real;80-real"
+export CUDAARCHS="60-virtual;70-virtual;80-virtual"
 
 if [[ "$cuda_compiler_version" == "11.8" ]]; then
-  export CUDA_ARCH_LIST="${CUDA_ARCH_LIST},sm_86,sm_90"
-  export CUDAARCHS="${CUDAARCHS};86-real;90"
+  export CUDA_ARCH_LIST="${CUDA_ARCH_LIST},sm_90"
+  export CUDAARCHS="${CUDAARCHS};90"
 elif [[ "$cuda_compiler_version" == "12."* ]]; then
-  export CUDA_ARCH_LIST="${CUDA_ARCH_LIST},sm_86,sm_90"
-  export CUDAARCHS="${CUDAARCHS};86-real;90"
+  export CUDA_ARCH_LIST="${CUDA_ARCH_LIST},sm_90"
+  export CUDAARCHS="${CUDAARCHS};90"
 else
   echo "Unsupported CUDA version. Please update build.sh"
   exit 1
@@ -29,6 +30,10 @@ export CUDAFLAGS="${CUDAFLAGS} -Xfatbin -compress-all"
 export CUDAFLAGS="${CUDAFLAGS} -Wno-deprecated-gpu-targets"
 export CXXFLAGS="${CXXFLAGS} -Wno-deprecated-declarations"
 
+# Set MKL configuration (aligned with Windows)
+export MKLROOT=$PREFIX
+export BLA_VENDOR=Intel10_64lp
+
 mkdir build
 cd build
 
@@ -39,6 +44,9 @@ cmake $SRC_DIR \
   -DGPU_TARGET=$CUDA_ARCH_LIST \
   -DMAGMA_ENABLE_CUDA:BOOL=ON \
   -DUSE_FORTRAN:BOOL=OFF \
+  -DMAGMA_WITH_MKL:BOOL=ON \
+  -DMKLROOT=$MKLROOT \
+  -DBLA_VENDOR=$BLA_VENDOR \
   -DCMAKE_CUDA_SEPARABLE_COMPILATION:BOOL=OFF \
   ${CMAKE_ARGS}
 

@@ -50,7 +50,7 @@ cmake %SRC_DIR% ^
   -DMAGMA_ENABLE_CUDA:BOOL=ON ^
   -DUSE_FORTRAN:BOOL=OFF ^
   -DMAGMA_WITH_MKL:BOOL=ON ^
-  -DMKLROOT=%LIBRARY_PREFIX% ^
+  -DMKLROOT=%MKLROOT% ^
   -DBLA_VENDOR=%BLA_VENDOR% ^
   -DLAPACK_LIBRARIES="%LAPACK_LIBRARIES%" ^
   -DCMAKE_CUDA_FLAGS="--use-local-env -Xfatbin -compress-all -Wno-deprecated-gpu-targets" ^
