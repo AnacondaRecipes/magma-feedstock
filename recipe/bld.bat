@@ -17,7 +17,7 @@ if "%cuda_compiler_version%"=="11.8" (
   set "CUDAARCHS=%CUDAARCHS%;90-virtual"
 
 ) else (
-  echo Unsupported CUDA version. Please update build.bat
+  echo Unsupported CUDA version. Please update bld.bat
   exit /b 1
 )
 
@@ -51,7 +51,7 @@ cmake %SRC_DIR% ^
   -DUSE_FORTRAN:BOOL=OFF ^
   -DMAGMA_WITH_MKL:BOOL=ON ^
   -DMKLROOT=%LIBRARY_PREFIX% ^
-  -DBLA_VENDOR=Intel10_64lp ^
+  -DBLA_VENDOR=%BLA_VENDOR% ^
   -DLAPACK_LIBRARIES="%LAPACK_LIBRARIES%" ^
   -DCMAKE_CUDA_FLAGS="--use-local-env -Xfatbin -compress-all -Wno-deprecated-gpu-targets" ^
   -DCMAKE_CUDA_SEPARABLE_COMPILATION:BOOL=OFF
