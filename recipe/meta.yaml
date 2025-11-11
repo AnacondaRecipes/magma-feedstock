@@ -1,4 +1,4 @@
-{% set version = "2.7.1" %}
+{% set version = "2.9.0" %}
 
 # adapted from recipe in https://github.com/pytorch/builder
 # TODO: examine if it is possible to link DSO dynamically
@@ -8,26 +8,22 @@ package:
 
 source:
    url: https://icl.cs.utk.edu/projectsfiles/magma/downloads/magma-{{ version }}.tar.gz
-   sha256: d9c8711c047a38cae16efde74bee2eb3333217fd2711e1e9b8606cbbb4ae1a50
+   sha256: ff77fd3726b3dfec3bfb55790b06480aa5cc384396c2db35c56fdae4a82c641c
    patches:
     - thread_queue.patch
+    - cmake_policy.patch
 
 build:
-  number: 1
-  # we currently only need this for pytorch GPU, which currently only uses this for linux-64.
-  # Windows is theoretically possible but we haven't got the CMake CUDA support to work there yet.
-  skip: True  # [not (linux and x86_64)]
-
+  number: 0
+  skip: true  # [not ((win or linux) and x86_64)]
 requirements:
   build:
+    - {{ stdlib('c') }}
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
     - {{ compiler('cuda') }}                                 # [gpu_variant == "cuda-12"]
-    - make        # [not win]
     - cmake
-    - ninja       # [win]
-    - m2-patch    # [win]
-    - patch       # [not win]
+    - ninja
   host:
     - cudatoolkit {{ cudatoolkit }}*                         # [gpu_variant == "cuda-11"]
     - cuda-cudart-dev                                        # [gpu_variant == "cuda-12"]
@@ -37,6 +33,7 @@ requirements:
     - intel-openmp {{ mkl }}
     - mkl {{ mkl }}
     - mkl-include
+    - mkl-devel {{ mkl }}  # [win]
   run:
     - {{ pin_compatible('cudatoolkit', max_pin='x.x') }}     # [gpu_variant == "cuda-11"]
     - intel-openmp {{ mkl }}
