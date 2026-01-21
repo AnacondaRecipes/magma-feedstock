@@ -17,9 +17,9 @@ if "%cuda_compiler_version%"=="11.8" (
   set "CUDAARCHS=%CUDAARCHS%;90-virtual"
 
 ) else if "%cuda_compiler_version:~0,3%"=="13." (
-  :: CUDA 13 drops support for sm_60 and sm_70.
-  :: We overwrite the list (do not use %CUDA_ARCH_LIST% prefix)
-  :: Adds sm_100 (Blackwell Data Center) and sm_120 (Blackwell Consumer)
+  REM CUDA 13 drops support for sm_60 and sm_70.
+  REM We overwrite the list (do not use %CUDA_ARCH_LIST% prefix)
+  REM Adds sm_100 (Blackwell Data Center) and sm_120 (Blackwell Consumer)
   set "CUDA_ARCH_LIST=sm_80,sm_90,sm_100,sm_120"
   set "CUDAARCHS=80-virtual;90-virtual;100-virtual;120-virtual"
 
