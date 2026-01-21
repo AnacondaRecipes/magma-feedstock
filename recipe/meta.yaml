@@ -38,9 +38,6 @@ requirements:
     - mkl-devel {{ mkl }}  # [win]
 
   run:
-    # 3. Removed 'cudatoolkit' pin (CUDA 11 specific). 
-    # The split packages above (libcublas etc) have their own internal run exports, 
-    # so they will automatically populate the necessary run dependencies.
     - intel-openmp {{ mkl }}
     - mkl {{ mkl }}
 
