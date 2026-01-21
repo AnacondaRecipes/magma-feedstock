@@ -60,6 +60,7 @@ cmake %SRC_DIR% ^
   -DMKLROOT=%MKLROOT% ^
   -DBLA_VENDOR=%BLA_VENDOR% ^
   -DLAPACK_LIBRARIES="%LAPACK_LIBRARIES%" ^
+  -DCMAKE_CXX_STANDARD=17 ^
   -DCMAKE_CUDA_FLAGS="--use-local-env -Xfatbin -compress-all -Wno-deprecated-gpu-targets" ^
   -DCMAKE_CUDA_SEPARABLE_COMPILATION:BOOL=OFF
 if errorlevel 1 exit /b 1
