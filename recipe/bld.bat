@@ -16,6 +16,13 @@ if "%cuda_compiler_version%"=="11.8" (
   set "CUDA_ARCH_LIST=%CUDA_ARCH_LIST%,sm_90"
   set "CUDAARCHS=%CUDAARCHS%;90-virtual"
 
+) else if "%cuda_compiler_version:~0,3%"=="13." (
+  REM CUDA 13 drops support for sm_60 and sm_70.
+  REM We overwrite the list (do not use %CUDA_ARCH_LIST% prefix)
+  REM Adds sm_100 (Blackwell Data Center) and sm_120 (Blackwell Consumer)
+  set "CUDA_ARCH_LIST=sm_80,sm_90,sm_100,sm_120"
+  set "CUDAARCHS=80-virtual;90-virtual;100-virtual;120-virtual"
+
 ) else (
   echo Unsupported CUDA version. Please update bld.bat
   exit /b 1
@@ -53,6 +60,7 @@ cmake %SRC_DIR% ^
   -DMKLROOT=%MKLROOT% ^
   -DBLA_VENDOR=%BLA_VENDOR% ^
   -DLAPACK_LIBRARIES="%LAPACK_LIBRARIES%" ^
+  -DCMAKE_CXX_STANDARD=17 ^
   -DCMAKE_CUDA_FLAGS="--use-local-env -Xfatbin -compress-all -Wno-deprecated-gpu-targets" ^
   -DCMAKE_CUDA_SEPARABLE_COMPILATION:BOOL=OFF
 if errorlevel 1 exit /b 1

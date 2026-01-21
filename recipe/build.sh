@@ -14,6 +14,13 @@ if [[ "$cuda_compiler_version" == "11.8" ]]; then
 elif [[ "$cuda_compiler_version" == "12."* ]]; then
   export CUDA_ARCH_LIST="${CUDA_ARCH_LIST},sm_90"
   export CUDAARCHS="${CUDAARCHS};90"
+elif [[ "$cuda_compiler_version" == "13."* ]]; then
+  # CUDA 13 drops support for sm_60 and sm_70. 
+  # We overwrite the list to include only supported modern architectures:
+  # sm_80 (Ampere), sm_90 (Hopper), sm_100 (Blackwell Data Center), sm_120 (Blackwell Consumer)
+  
+  export CUDA_ARCH_LIST="sm_80,sm_90,sm_100,sm_120"
+  export CUDAARCHS="80;90;100;120"
 else
   echo "Unsupported CUDA version. Please update build.sh"
   exit 1

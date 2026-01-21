@@ -1,0 +1,30 @@
+diff --git a/interface_cuda/interface.cpp b/interface_cuda/interface.cpp
+index 50b4fa3d3..86ba5e7a0 100644
+--- a/interface_cuda/interface.cpp
++++ b/interface_cuda/interface.cpp
+@@ -454,7 +454,11 @@ magma_print_environment()
+         printf( "%% device %d: %s, %.1f MHz clock, %.1f MiB memory, capability %d.%d\n",
+                 dev,
+                 prop.name,
+-                prop.clockRate / 1000.,
++                #if CUDART_VERSION >= 13000
++                    0.0, /* clockRate removed in CUDA 13 */
++                #else           
++                    prop.clockRate / 1000.,
++                #endif
+                 prop.totalGlobalMem / (1024.*1024.),
+                 prop.major,
+                 prop.minor );
+@@ -474,7 +478,11 @@ magma_print_environment()
+         printf( "%% device %d: %s, %.1f MHz clock, %.1f MiB memory, gcn arch %s\n",
+                 dev,
+                 prop.name,
+-                prop.clockRate / 1000.,
++                #if CUDART_VERSION >= 13000
++                    0.0, /* clockRate removed in CUDA 13 */
++                #else           
++                    prop.clockRate / 1000.,
++                #endif
+                 prop.totalGlobalMem / (1024.*1024.),
+                 prop.gcnArchName );
+         #endif
