@@ -21,21 +21,26 @@ requirements:
     - {{ stdlib('c') }}
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - {{ compiler('cuda') }}                                 # [gpu_variant == "cuda-12"]
+    - {{ compiler('cuda') }}                                 # [cuda_compiler_version != "None"]
     - cmake
     - ninja
   host:
-    - cudatoolkit {{ cudatoolkit }}*                         # [gpu_variant == "cuda-11"]
-    - cuda-cudart-dev                                        # [gpu_variant == "cuda-12"]
-    - cuda-profiler-api                                      # [gpu_variant == "cuda-12"]
-    - libcublas-dev                                          # [gpu_variant == "cuda-12"]
-    - libcusparse-dev                                        # [gpu_variant == "cuda-12"]
+    - cuda-version {{ cuda_compiler_version }}               # [cuda_compiler_version != "None"]
+
+    - cuda-cudart-dev                                        # [cuda_compiler_version != "None"]
+    - cuda-profiler-api                                      # [cuda_compiler_version != "None"]
+    - libcublas-dev                                          # [cuda_compiler_version != "None"]
+    - libcusparse-dev                                        # [cuda_compiler_version != "None"]
+
     - intel-openmp {{ mkl }}
     - mkl {{ mkl }}
     - mkl-include
     - mkl-devel {{ mkl }}  # [win]
+
   run:
-    - {{ pin_compatible('cudatoolkit', max_pin='x.x') }}     # [gpu_variant == "cuda-11"]
+    # 3. Removed 'cudatoolkit' pin (CUDA 11 specific). 
+    # The split packages above (libcublas etc) have their own internal run exports, 
+    # so they will automatically populate the necessary run dependencies.
     - intel-openmp {{ mkl }}
     - mkl {{ mkl }}
 
