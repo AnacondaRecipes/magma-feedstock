@@ -31,14 +31,16 @@ requirements:
     - libcublas-dev                                          # [cuda_compiler_version != "None"]
     - libcusparse-dev                                        # [cuda_compiler_version != "None"]
 
-    - intel-openmp {{ mkl }}
-    - mkl {{ mkl }}
-    - mkl-include
+    - intel-openmp {{ mkl }}  # [x86_64]
+    - mkl {{ mkl }}  # [x86_64]
+    - mkl-include  # [x86_64]
     - mkl-devel {{ mkl }}  # [win]
+    - libopenblas  # [aarch64]
 
   run:
-    - intel-openmp {{ mkl }}
-    - mkl {{ mkl }}
+    - intel-openmp {{ mkl }}  # [x86_64]
+    - mkl {{ mkl }}  # [x86_64]
+    - libopenblas  # [aarch64]
 
 test:
   commands:
