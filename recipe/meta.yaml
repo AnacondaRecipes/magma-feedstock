@@ -16,7 +16,8 @@ build:
   number: 2
   skip: true  # [not (win or linux)]
   overlinking_ignore_patterns:
-    - "lib/libgomp.so*"  # [aarch64]
+    - "lib/libgomp.so*"    # [aarch64]
+    - "lib/libmagma*.so*"  # [aarch64]
 requirements:
   build:
     - {{ stdlib('c') }}
