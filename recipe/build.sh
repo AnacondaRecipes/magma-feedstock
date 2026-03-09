@@ -37,12 +37,16 @@ export CUDAFLAGS="${CUDAFLAGS} -Xfatbin -compress-all"
 export CUDAFLAGS="${CUDAFLAGS} -Wno-deprecated-gpu-targets"
 export CXXFLAGS="${CXXFLAGS} -Wno-deprecated-declarations"
 
-# Set MKL configuration (aligned with Windows)
-export MKLROOT=$PREFIX
-export BLA_VENDOR=Intel10_64lp
-
 mkdir build
 cd build
+
+CMAKE_EXTRA_ARGS=""
+if [[ "$(uname -m)" == "aarch64" ]]; then
+  CMAKE_EXTRA_ARGS="-DBLA_VENDOR=OpenBLAS"
+else
+  export MKLROOT=$PREFIX
+  CMAKE_EXTRA_ARGS="-DMAGMA_WITH_MKL:BOOL=ON -DMKLROOT=$MKLROOT -DBLA_VENDOR=Intel10_64lp"
+fi
 
 cmake $SRC_DIR \
   -G "Ninja" \
@@ -51,10 +55,8 @@ cmake $SRC_DIR \
   -DGPU_TARGET=$CUDA_ARCH_LIST \
   -DMAGMA_ENABLE_CUDA:BOOL=ON \
   -DUSE_FORTRAN:BOOL=OFF \
-  -DMAGMA_WITH_MKL:BOOL=ON \
-  -DMKLROOT=$MKLROOT \
-  -DBLA_VENDOR=$BLA_VENDOR \
   -DCMAKE_CUDA_SEPARABLE_COMPILATION:BOOL=OFF \
+  ${CMAKE_EXTRA_ARGS} \
   ${CMAKE_ARGS}
 
 # Build both magma and magma_sparse (unlike conda-forge which only builds magma_sparse)
