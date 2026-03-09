@@ -13,8 +13,8 @@ source:
     - patches/cuda13_clockrate.patch
 
 build:
-  number: 1
-  skip: true  # [not ((win or linux) and x86_64)]
+  number: 2
+  skip: true  # [not (win or linux)]
 requirements:
   build:
     - {{ stdlib('c') }}
