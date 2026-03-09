@@ -41,6 +41,7 @@ requirements:
     - intel-openmp {{ mkl }}  # [x86_64]
     - mkl {{ mkl }}  # [x86_64]
     - libopenblas  # [aarch64]
+    - libgomp  # [aarch64]
 
 test:
   commands:
