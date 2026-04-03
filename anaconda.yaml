@@ -1,5 +1,5 @@
 anaconda_config_version: 1
 upstream_sources:
   - webpage:
-      url: http://icl.utk.edu/projectsfiles/magma/downloads/magma-{}.tar.gz
+      url: https://icl.utk.edu/magma/software/index.html
       regex: magma-([\d.]+)\.tar\.gz
