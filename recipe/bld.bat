@@ -35,9 +35,9 @@ if errorlevel 1 exit /b 1
 set "CMAKE_PREFIX_PATH=%LIBRARY_PREFIX%;%CMAKE_PREFIX_PATH%"
 
 if "%blas_impl%"=="openblas" (
-    set "SS_BLAS=-DBLA_VENDOR=OpenBLAS"
+    set "BLAS_CONFIG=-DBLA_VENDOR=OpenBLAS -DLAPACK_LIBRARIES=%LIBRARY_PREFIX%\lib\openblas.lib"
 ) else if "%blas_impl%"=="mkl" (
-    set "SS_BLAS=-DBLA_VENDOR=Intel10_64lp -DMAGMA_WITH_MKL:BOOL=ON -DMKLROOT=%LIBRARY_PREFIX% -DLAPACK_LIBRARIES=%LIBRARY_PREFIX%\lib\mkl_rt.lib"
+    set "BLAS_CONFIG=-DBLA_VENDOR=Intel10_64lp -DMAGMA_WITH_MKL:BOOL=ON -DMKLROOT=%LIBRARY_PREFIX% -DLAPACK_LIBRARIES=%LIBRARY_PREFIX%\lib\mkl_rt.lib"
 ) else (
     echo ERROR: blas_impl must be openblas or mkl, got "%blas_impl%"
     exit /b 1
@@ -56,7 +56,7 @@ cmake %SRC_DIR% ^
   -DGPU_TARGET="%CUDA_ARCH_LIST%" ^
   -DMAGMA_ENABLE_CUDA:BOOL=ON ^
   -DUSE_FORTRAN:BOOL=OFF ^
-  %SS_BLAS% ^
+  %BLAS_CONFIG% ^
   -DCMAKE_CXX_STANDARD=17 ^
   -DCMAKE_CUDA_FLAGS="--use-local-env -Xfatbin -compress-all -Wno-deprecated-gpu-targets" ^
   -DCMAKE_CUDA_SEPARABLE_COMPILATION:BOOL=OFF
