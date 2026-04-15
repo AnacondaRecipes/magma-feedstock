@@ -35,7 +35,7 @@ if errorlevel 1 exit /b 1
 set "CMAKE_PREFIX_PATH=%LIBRARY_PREFIX%;%CMAKE_PREFIX_PATH%"
 
 if "%blas_impl%"=="openblas" (
-    set "BLAS_CONFIG=-DBLA_VENDOR=OpenBLAS -DLAPACK_LIBRARIES=%LIBRARY_PREFIX%\lib\libopenblas.lib"
+    set "BLAS_CONFIG=-DBLA_VENDOR=OpenBLAS -DLAPACK_LIBRARIES=%LIBRARY_PREFIX%\lib\openblas.lib"
 ) else if "%blas_impl%"=="mkl" (
     set "BLAS_CONFIG=-DBLA_VENDOR=Intel10_64lp -DMAGMA_WITH_MKL:BOOL=ON -DMKLROOT=%LIBRARY_PREFIX% -DLAPACK_LIBRARIES=%LIBRARY_PREFIX%\lib\mkl_rt.lib"
 ) else (
