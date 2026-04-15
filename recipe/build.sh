@@ -40,12 +40,14 @@ export CXXFLAGS="${CXXFLAGS} -Wno-deprecated-declarations"
 mkdir build
 cd build
 
-CMAKE_EXTRA_ARGS=""
-if [[ "$(uname -m)" == "aarch64" ]]; then
+if [[ "${blas_impl}" == "openblas" ]]; then
   CMAKE_EXTRA_ARGS="-DBLA_VENDOR=OpenBLAS"
-else
+elif [[ "${blas_impl}" == "mkl" ]]; then
   export MKLROOT=$PREFIX
   CMAKE_EXTRA_ARGS="-DMAGMA_WITH_MKL:BOOL=ON -DMKLROOT=$MKLROOT -DBLA_VENDOR=Intel10_64lp"
+else
+  echo "ERROR: blas_impl must be openblas or mkl, got '${blas_impl}'"
+  exit 1
 fi
 
 cmake $SRC_DIR \
