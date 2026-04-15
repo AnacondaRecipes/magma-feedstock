@@ -39,6 +39,7 @@ requirements:
     - mkl-include  # [blas_impl == "mkl"]
     - mkl-devel {{ mkl }}  # [blas_impl == "mkl" and win]
     - libopenblas  # [blas_impl == "openblas"]
+    - openblas-devel  # [blas_impl == "openblas" and win]
 
   run:
     - intel-openmp {{ mkl }}  # [blas_impl == "mkl"]
