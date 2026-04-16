@@ -45,7 +45,7 @@ requirements:
     - intel-openmp {{ mkl }}  # [blas_impl == "mkl"]
     - mkl {{ mkl }}  # [blas_impl == "mkl"]
     - libopenblas  # [blas_impl == "openblas"]
-    - libgomp      # [blas_impl == "openblas"]
+    - libgomp      # [blas_impl == "openblas" and linux]
 
 test:
   commands:
