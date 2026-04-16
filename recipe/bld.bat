@@ -32,16 +32,16 @@ md build
 cd build
 if errorlevel 1 exit /b 1
 
-:: Set MKLROOT and CMAKE_PREFIX_PATH for MKL detection
-set "MKLROOT=%LIBRARY_PREFIX%"
 set "CMAKE_PREFIX_PATH=%LIBRARY_PREFIX%;%CMAKE_PREFIX_PATH%"
 
-:: Set BLA_VENDOR environment variable so CMake can find MKL
-set "BLA_VENDOR=Intel10_64lp"
-
-:: Explicitly set MKL library using the single-dynamic runtime (mkl_rt.lib)
-:: This is what's provided by mkl-devel on Windows defaults channel
-set "LAPACK_LIBRARIES=%LIBRARY_PREFIX%\lib\mkl_rt.lib"
+if "%blas_impl%"=="openblas" (
+    set "BLAS_CONFIG=-DBLA_VENDOR=OpenBLAS -DLAPACK_LIBRARIES=%LIBRARY_PREFIX%\lib\openblas.lib"
+) else if "%blas_impl%"=="mkl" (
+    set "BLAS_CONFIG=-DBLA_VENDOR=Intel10_64lp -DMAGMA_WITH_MKL:BOOL=ON -DMKLROOT=%LIBRARY_PREFIX% -DLAPACK_LIBRARIES=%LIBRARY_PREFIX%\lib\mkl_rt.lib"
+) else (
+    echo ERROR: blas_impl must be openblas or mkl, got "%blas_impl%"
+    exit /b 1
+)
 
 :: Must add --use-local-env to NVCC_FLAGS otherwise NVCC autoconfigs the host
 :: compiler to cl.exe instead of the full path. MSVC does not accept a
@@ -56,10 +56,7 @@ cmake %SRC_DIR% ^
   -DGPU_TARGET="%CUDA_ARCH_LIST%" ^
   -DMAGMA_ENABLE_CUDA:BOOL=ON ^
   -DUSE_FORTRAN:BOOL=OFF ^
-  -DMAGMA_WITH_MKL:BOOL=ON ^
-  -DMKLROOT=%MKLROOT% ^
-  -DBLA_VENDOR=%BLA_VENDOR% ^
-  -DLAPACK_LIBRARIES="%LAPACK_LIBRARIES%" ^
+  %BLAS_CONFIG% ^
   -DCMAKE_CXX_STANDARD=17 ^
   -DCMAKE_CUDA_FLAGS="--use-local-env -Xfatbin -compress-all -Wno-deprecated-gpu-targets" ^
   -DCMAKE_CUDA_SEPARABLE_COMPILATION:BOOL=OFF
