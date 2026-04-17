@@ -5,9 +5,12 @@ package:
   version: {{ version }}
 
 source:
-   url: https://icl.cs.utk.edu/projectsfiles/magma/downloads/magma-{{ version }}.tar.gz
-   sha256: ea0c57fcb64ac2fd7ffe8f02d8fe18f07055c5b7fba0164f565d1e3a85148fb5
-   patches:
+  # TODO: Remove vendored tarball and use `url` below once PBP can reliably download upstream source.
+  # url: https://icl.cs.utk.edu/projectsfiles/magma/downloads/magma-{{ version }}.tar.gz
+  url: file://{{ RECIPE_DIR }}/magma-{{ version }}.tar.gz  # [not win]
+  url: file:///{{ RECIPE_DIR }}/magma-{{ version }}.tar.gz  # [win]
+  sha256: ea0c57fcb64ac2fd7ffe8f02d8fe18f07055c5b7fba0164f565d1e3a85148fb5
+  patches:
     - patches/thread_queue.patch
 
 build:
@@ -23,7 +26,7 @@ requirements:
     - {{ compiler('cxx') }}
     - {{ compiler('cuda') }}                                 # [cuda_compiler_version != "None"]
     - cmake
-    - ninja
+    - ninja-base
   host:
     - cuda-version {{ cuda_compiler_version }}               # [cuda_compiler_version != "None"]
 
