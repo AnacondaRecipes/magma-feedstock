@@ -1,8 +1,22 @@
 @echo on
 
-:: This step is required when building from raw source archive
-:: make generate --jobs %CPU_COUNT%
-:: if errorlevel 1 exit /b 1
+:: Git tag archives need generated precision sources (Makefile), same as Unix build.sh.
+:: Requires GNU Make, Perl, and Python on PATH (not always present on Windows builders).
+pushd %SRC_DIR%
+(
+echo BACKEND = cuda
+echo FORT = true
+echo GPU_TARGET = Ampere
+) > make.inc
+where make >nul 2>&1
+if errorlevel 1 (
+  echo ERROR: GNU make is required to run "make generate" for Git-sourced MAGMA.
+  exit /b 1
+)
+make generate --jobs %CPU_COUNT%
+if errorlevel 1 exit /b 1
+del make.inc
+popd
 
 :: Duplicate lists because of https://bitbucket.org/icl/magma/pull-requests/32
 set "CUDA_ARCH_LIST=sm_60,sm_70,sm_80"
