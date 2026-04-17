@@ -2,6 +2,18 @@
 
 set -ex
 
+# Official release tarballs ship with generated precision sources and CMake.src.cuda.
+# Git tag archives do not — run the Makefile generator before CMake (see upstream README).
+pushd "${SRC_DIR}"
+cat > make.inc <<'EOF'
+BACKEND = cuda
+FORT = true
+GPU_TARGET = Ampere
+EOF
+make generate -j"${CPU_COUNT}"
+rm -f make.inc
+popd
+
 # Duplicate lists because of https://bitbucket.org/icl/magma/pull-requests/32
 # Use compatible arches for CUDA 12.8 (minimum sm_60)
 # Aligned with Windows build: sm_60,sm_70,sm_80,sm_90 for CUDA 12
