@@ -8,11 +8,7 @@ echo BACKEND = cuda
 echo FORT = true
 echo GPU_TARGET = Ampere
 ) > make.inc
-where make >nul 2>&1
-if errorlevel 1 (
-  echo ERROR: GNU make is required to run "make generate" for Git-sourced MAGMA.
-  exit /b 1
-)
+
 make generate --jobs %CPU_COUNT%
 if errorlevel 1 exit /b 1
 del make.inc
