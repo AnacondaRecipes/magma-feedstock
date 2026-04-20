@@ -13,11 +13,11 @@ source:
     - patches/cuda13_clockrate.patch
 
 build:
-  number: 2
+  number: 3
   skip: true  # [not (win or linux)]
   overlinking_ignore_patterns:
-    - "lib/libgomp.so*"    # [aarch64]
-    - "lib/libmagma*.so*"  # [aarch64]
+    - "lib/libgomp.so*"    # [blas_impl == "openblas"]
+    - "lib/libmagma*.so*"  # [blas_impl == "openblas"]
 requirements:
   build:
     - {{ stdlib('c') }}
@@ -25,7 +25,7 @@ requirements:
     - {{ compiler('cxx') }}
     - {{ compiler('cuda') }}                                 # [cuda_compiler_version != "None"]
     - cmake
-    - ninja
+    - ninja-base
   host:
     - cuda-version {{ cuda_compiler_version }}               # [cuda_compiler_version != "None"]
 
@@ -34,17 +34,18 @@ requirements:
     - libcublas-dev                                          # [cuda_compiler_version != "None"]
     - libcusparse-dev                                        # [cuda_compiler_version != "None"]
 
-    - intel-openmp {{ mkl }}  # [x86_64]
-    - mkl {{ mkl }}  # [x86_64]
-    - mkl-include  # [x86_64]
-    - mkl-devel {{ mkl }}  # [win]
-    - libopenblas  # [aarch64]
+    - intel-openmp {{ mkl }}  # [blas_impl == "mkl"]
+    - mkl {{ mkl }}  # [blas_impl == "mkl"]
+    - mkl-include  # [blas_impl == "mkl"]
+    - mkl-devel {{ mkl }}  # [blas_impl == "mkl" and win]
+    - libopenblas  # [blas_impl == "openblas"]
+    - openblas-devel  # [blas_impl == "openblas" and win]
 
   run:
-    - intel-openmp {{ mkl }}  # [x86_64]
-    - mkl {{ mkl }}  # [x86_64]
-    - libopenblas  # [aarch64]
-    - libgomp  # [aarch64]
+    - intel-openmp {{ mkl }}  # [blas_impl == "mkl"]
+    - mkl {{ mkl }}  # [blas_impl == "mkl"]
+    - libopenblas  # [blas_impl == "openblas"]
+    - libgomp      # [blas_impl == "openblas" and linux]
 
 test:
   commands:

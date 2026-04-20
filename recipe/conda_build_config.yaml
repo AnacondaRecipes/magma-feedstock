@@ -3,3 +3,7 @@ cuda_compiler_version:
   - 13.0
 mkl:
   - 2025
+
+blas_impl:
+  - mkl                        # [(x86 or x86_64) and not osx]
+  - openblas
