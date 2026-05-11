@@ -14,7 +14,7 @@ source:
     - patches/thread_queue.patch
 
 build:
-  number: 0
+  number: 1
   skip: true  # [not (win or linux)]
   overlinking_ignore_patterns:
     - "lib/libgomp.so*"    # [blas_impl == "openblas"]
@@ -41,12 +41,14 @@ requirements:
     - mkl-devel {{ mkl }}  # [blas_impl == "mkl" and win]
     - libopenblas  # [blas_impl == "openblas"]
     - openblas-devel  # [blas_impl == "openblas" and win]
+    - vcomp14  # [blas_impl == "openblas" and (win and x86_64)]
 
   run:
     - intel-openmp {{ mkl }}  # [blas_impl == "mkl"]
     - mkl {{ mkl }}  # [blas_impl == "mkl"]
     - libopenblas  # [blas_impl == "openblas"]
     - libgomp      # [blas_impl == "openblas" and linux]
+    - vcomp14      # [blas_impl == "openblas" and (win and x86_64)]
 
 test:
   commands:
