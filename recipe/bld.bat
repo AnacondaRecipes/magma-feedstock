@@ -43,6 +43,17 @@ if "%blas_impl%"=="openblas" (
     exit /b 1
 )
 
+:: win-arm64: vcomp140.dll is not shipped on the win-arm64 channel, so MSVC's
+:: default /openmp (vcomp) cannot be used. Point its LLVM OpenMP mode at
+:: conda's llvm-openmp (libomp) instead (pytorch-feedstock#118 precedent).
+:: magma only applies the OpenMP compile flags (it never links OpenMP), so
+:: libomp.lib is also linked explicitly: otherwise /openmp:llvm resolves to
+:: MSVC's libomp140.<arch>.dll, which no conda package provides.
+set "OPENMP_CONFIG="
+if "%target_platform%"=="win-arm64" (
+    set "OPENMP_CONFIG=-DOpenMP_C_FLAGS=/openmp:llvm -DOpenMP_CXX_FLAGS=/openmp:llvm -DOpenMP_C_LIB_NAMES=libomp -DOpenMP_CXX_LIB_NAMES=libomp -DOpenMP_libomp_LIBRARY=%LIBRARY_LIB:\=/%/libomp.lib -DCMAKE_SHARED_LINKER_FLAGS=%LIBRARY_LIB:\=/%/libomp.lib"
+)
+
 :: Must add --use-local-env to NVCC_FLAGS otherwise NVCC autoconfigs the host
 :: compiler to cl.exe instead of the full path. MSVC does not accept a
 :: C++11 standard argument, and defaults to C++14
@@ -57,6 +68,7 @@ cmake %SRC_DIR% ^
   -DMAGMA_ENABLE_CUDA:BOOL=ON ^
   -DUSE_FORTRAN:BOOL=OFF ^
   %BLAS_CONFIG% ^
+  %OPENMP_CONFIG% ^
   -DCMAKE_CXX_STANDARD=17 ^
   -DCMAKE_CUDA_FLAGS="--use-local-env -Xfatbin -compress-all -Wno-deprecated-gpu-targets" ^
   -DCMAKE_CUDA_SEPARABLE_COMPILATION:BOOL=OFF
