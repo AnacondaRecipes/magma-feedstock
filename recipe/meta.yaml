@@ -44,7 +44,9 @@ requirements:
     - vcomp14  # [blas_impl == "openblas" and (win and x86_64)]
     # win-arm64 has no vcomp (vc14_runtime ships no OpenMP runtime there);
     # bld.bat points MSVC's /openmp:llvm at conda's llvm-openmp instead.
-    - llvm-openmp  # [win and arm64]
+    # Pinned for reproducibility (not in the aggregate CBC); 20.1.8 matches the
+    # win-arm64 clang/flang toolchain.
+    - llvm-openmp 20.1.8  # [win and arm64]
 
   run:
     - intel-openmp {{ mkl }}  # [blas_impl == "mkl"]
