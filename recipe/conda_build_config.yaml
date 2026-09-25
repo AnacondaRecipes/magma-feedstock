@@ -1,6 +1,8 @@
 cuda_compiler_version:
-  - 12.9
-  - 13.0
+  - 12.9                       # [not (win and arm64)]
+  - 13.0                       # [not (win and arm64)]
+  # win-arm64: the only CUDA toolkit on pkgs/main is 13.4 (first WoA CTK).
+  - 13.4                       # [win and arm64]
 mkl:
   - 2025
 
